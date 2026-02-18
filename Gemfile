@@ -12,6 +12,10 @@ gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'puma', '~> 5.6'
 
+gem "ffi", ">= 1.16"
+
+gem "concurrent-ruby", "~> 1.1", "< 1.2"
+
 # Use SCSS for stylesheets
 gem 'sass-rails'
 
