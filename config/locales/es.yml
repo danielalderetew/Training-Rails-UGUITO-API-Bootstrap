@@ -31,3 +31,6 @@
 
 es:
   hello: "Hola Mundo!"
+  errors:
+    review:
+      too_long: "La reseña debe tener como máximo %{count} palabras."
