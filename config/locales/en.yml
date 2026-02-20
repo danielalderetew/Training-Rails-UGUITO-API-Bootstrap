@@ -33,4 +33,4 @@ en:
   hello: "Hello world"
   errors:
     review:
-      too_long: "The review must have at most {count} words"
+      too_long: "The review must have at most %{count} words"
