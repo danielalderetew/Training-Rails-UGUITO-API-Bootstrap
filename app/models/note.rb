@@ -16,8 +16,23 @@ class Note < ApplicationRecord
   validates :title, :content, :note_type,
             presence: true
 
+  validate :validate_review_content
+
   belongs_to :user
 
- 
+  def word_count
+    content.split.count
+  end
 
+  def validate_review_content
+    return unless review?
+    return unless user&.utility
+
+    max_review_words = user.utility.max_review_words
+
+    unless word_count <= max_review_words
+      errors.add(:content, "Review must have at most #{max_review_words} words")
+    end
+  end
+  
 end

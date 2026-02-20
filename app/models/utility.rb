@@ -29,6 +29,10 @@ class Utility < ApplicationRecord
 
   store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
 
+
+  class_attribute :max_review_words, :medium_content_limit, :short_content_limit
+
+
   def generate_entity_code
     return if code.present? && !code.to_i.zero?
     self.code = id
@@ -71,6 +75,17 @@ class Utility < ApplicationRecord
 
   def clean_name
     self.class.name.underscore.split('_').first
+  end
+
+  def content_length(word_count)
+    case word_count
+    when 0..short_content_limit
+      'short'
+    when (short_content_limit + 1)..medium_content_limit
+      'medium'
+    else
+      'long'
+    end
   end
 
   private

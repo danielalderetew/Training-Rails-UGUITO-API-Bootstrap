@@ -31,4 +31,11 @@ FactoryBot.create(:user, utility: north_utility, email: 'test_north@widergy.com'
 User.all.find_each do |user|
   random_books_amount = [1, 2, 3].sample
   FactoryBot.create_list(:book, random_books_amount, user: user, utility: user.utility)
+  # Notes
+  FactoryBot.create(:note,title: 'Una critica North!', content: 'Esta es una critica', note_type: Note.note_types[:critique], user_id: 1)
+  FactoryBot.create(:note,title: 'Una reseña North!', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas arcu risus, imperdiet laoreet ante sit amet, bibendum mollis leo. Pellentesque sagittis risus eu aliquam faucibus. Quisque mattis augue lectus, at imperdiet enim gravida non. Mauris malesuada turpis non mollis molestie. Phasellus varius varius volutpat. Donec volutpat, lorem vestibulum lacinia.', note_type: Note.note_types[:review], user_id: 2)
+  FactoryBot.create(:note,title: 'Una critica South!', content: 'Esta es una critica', note_type: Note.note_types[:critique], user_id: 21)
+  FactoryBot.create(:note,title: 'Una reseña South!', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas arcu risus, imperdiet laoreet ante sit amet, bibendum mollis leo. Pellentesque sagittis risus eu aliquam faucibus. Quisque mattis augue lectus, at imperdiet enim gravida non. Mauris malesuada turpis non mollis molestie. Phasellus varius varius volutpat. Donec volutpat, lorem vestibulum lacinia. Phasellus varius varius volutpat. Donec volutpat, lorem vestibulum lacinia.', note_type: Note.note_types[:review], user_id: 22)
+
+
 end
