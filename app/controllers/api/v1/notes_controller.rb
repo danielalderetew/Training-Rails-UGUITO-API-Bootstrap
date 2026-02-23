@@ -6,7 +6,7 @@ module Api
       end
 
       def show
-       render json: note
+       render json: note, serializer: ShowNoteSerializer
       end
 
       private
