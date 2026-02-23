@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :note do
     title { Faker::Book.title }
-    content { Faker::Lorem.words(number: 50).join(" ") }
     note_type { :critique }
     user
 
@@ -14,19 +13,28 @@ FactoryBot.define do
     end
 
     trait :long_content do
-      content { Faker::Lorem.words(number: 150).join(" ") }
+      content do
+        limit_min = user.utility.medium_content_limit
+        limit_max = user.utility.medium_content_limit + 80
+        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+      end
     end
+    
 
-    trait :medium_content_north do
-      content { Faker::Lorem.words(number: 55).join(" ") }
-    end
-
-    trait :medium_content_south do
-      content { Faker::Lorem.words(number: 65).join(" ") }
+    trait :medium_content do
+      content do
+        limit_max = user.utility.medium_content_limit
+        limit_min = user.utility.short_content_limit
+        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+      end
     end
 
     trait :short_content do
-      content { Faker::Lorem.words(number: 10).join(" ") }
+      content do
+        limit_max = user.utility.short_content_limit
+        limit_min = 1
+        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+      end
     end
 
     trait :north do

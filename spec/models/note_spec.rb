@@ -50,7 +50,7 @@ RSpec.describe Note, type: :model do
       let(:user_trait) { :north }
 
       it_behaves_like 'calculates correctly', :short_content, 'short'
-      it_behaves_like 'calculates correctly', :medium_content_north, 'medium'
+      it_behaves_like 'calculates correctly', :medium_content, 'medium'
       it_behaves_like 'calculates correctly', :long_content, 'long'
     end
     
@@ -58,7 +58,7 @@ RSpec.describe Note, type: :model do
       let(:user_trait) { :south }
 
       it_behaves_like 'calculates correctly', :short_content, 'short'    
-      it_behaves_like 'calculates correctly', :medium_content_south, 'medium'    
+      it_behaves_like 'calculates correctly', :medium_content, 'medium'    
       it_behaves_like 'calculates correctly', :long_content, 'long'
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Note, type: :model do
         let(:note_type_trait) { :review }
 
         it_behaves_like 'a valid note', :short_content
-        it_behaves_like 'an invalid note', :medium_content_north
+        it_behaves_like 'an invalid note', :medium_content
         it_behaves_like 'an invalid note', :long_content
       end
 
@@ -81,7 +81,7 @@ RSpec.describe Note, type: :model do
         let(:note_type_trait) { :critique }
 
         it_behaves_like 'a valid note', :short_content
-        it_behaves_like 'a valid note', :medium_content_north
+        it_behaves_like 'a valid note', :medium_content
         it_behaves_like 'a valid note', :long_content
       end
     end
@@ -93,7 +93,7 @@ RSpec.describe Note, type: :model do
       let(:note_type_trait) { :review }
 
       it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'an invalid note', :medium_content_south
+      it_behaves_like 'an invalid note', :medium_content
       it_behaves_like 'an invalid note', :long_content
     end
 
@@ -101,7 +101,7 @@ RSpec.describe Note, type: :model do
       let(:note_type_trait) { :critique }
 
       it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'a valid note', :medium_content_south
+      it_behaves_like 'a valid note', :medium_content
       it_behaves_like 'a valid note', :long_content
     end
   end
