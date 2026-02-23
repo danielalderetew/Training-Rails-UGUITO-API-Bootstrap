@@ -2,41 +2,31 @@ module Api
   module V1
     class NotesController < ApplicationController
       def index
-        render json: index_note,
-               each_serializer: IndexNoteSerializer,
-               adapter: :json,
-               meta: pagination_meta(index_note)
+        render json: notes,
+          each_serializer: IndexNoteSerializer,
+          adapter: :json,
+          meta: pagination_meta(notes) 
       end
 
       def show
-       render json: show_note, serializer: ShowNoteSerializer
+        render json: note, serializer: ShowNoteSerializer
       end
 
       private
-  
-      def index_params
+
+      def notes_params
         params.permit(:type, :order, :page, :page_size)
-       end
-
-      def show_note
-        Note.find_by!(id: params[:id])
       end
 
-      def index_note
-        Note.where(note_type: index_params[:type])
-          .order(created_at: index_params[:order] || :desc)
-          .page(index_params[:page])
-          .per(index_params[:page_size] || 10)
+      def note
+        Note.find(params[:id])
       end
 
-      def pagination_meta(collection)
-        {
-          current_page: collection.current_page,
-          next_page: collection.next_page,
-          prev_page: collection.prev_page,
-          total_pages: collection.total_pages,
-          total_count: collection.total_count
-        }
+      def notes
+        Note.where(note_type: notes_params[:type])
+            .order(created_at: notes_params[:order] || :desc)
+            .page(notes_params[:page])
+            .per(notes_params[:page_size] || 10)
       end
     end
   end
