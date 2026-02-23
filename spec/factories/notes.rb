@@ -17,8 +17,12 @@ FactoryBot.define do
       content { Faker::Lorem.words(number: 150).join(" ") }
     end
 
-    trait :medium_content do
-      content { Faker::Lorem.words(number: 50).join(" ") }
+    trait :medium_content_north do
+      content { Faker::Lorem.words(number: 55).join(" ") }
+    end
+
+    trait :medium_content_south do
+      content { Faker::Lorem.words(number: 65).join(" ") }
     end
 
     trait :short_content do

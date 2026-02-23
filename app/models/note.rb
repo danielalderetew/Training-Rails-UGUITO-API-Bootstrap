@@ -24,6 +24,10 @@ class Note < ApplicationRecord
     content.split.count
   end
 
+  def content_length
+    user.utility.content_length(word_count)
+  end
+
   def validate_review_content
     return unless review?
     return unless user&.utility

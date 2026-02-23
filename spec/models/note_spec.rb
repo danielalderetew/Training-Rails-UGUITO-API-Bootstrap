@@ -8,14 +8,20 @@ RSpec.describe Note, type: :model do
   let(:content_trait) { :short_content }
   let(:user_trait) { :north }
 
+  shared_examples 'calculates correctly' do |content_trait_value, expected_length|
+    let(:content_trait) { content_trait_value }
+    let(:note_type_trait) { :critique }
+    it { expect(note.content_length).to eq(expected_length) }
+  end
+
   shared_examples 'a valid note' do |content_trait_value|
-      let(:content_trait) { content_trait_value }
-      it { is_expected.to be_valid }
+    let(:content_trait) { content_trait_value }
+    it { is_expected.to be_valid }
   end
   
   shared_examples 'an invalid note' do |content_trait_value|
-      let(:content_trait) { content_trait_value }
-      it { is_expected.not_to be_valid }
+    let(:content_trait) { content_trait_value }
+    it { is_expected.not_to be_valid }
   end
 
   %i[title content note_type].each do |value|
@@ -38,26 +44,47 @@ RSpec.describe Note, type: :model do
     end
   end
 
+  describe '#content_length' do
+    
+    context 'when user is North' do
+      let(:user_trait) { :north }
+
+      it_behaves_like 'calculates correctly', :short_content, 'short'
+      it_behaves_like 'calculates correctly', :medium_content_north, 'medium'
+      it_behaves_like 'calculates correctly', :long_content, 'long'
+    end
+    
+    context 'when user is South' do
+      let(:user_trait) { :south }
+
+      it_behaves_like 'calculates correctly', :short_content, 'short'    
+      it_behaves_like 'calculates correctly', :medium_content_south, 'medium'    
+      it_behaves_like 'calculates correctly', :long_content, 'long'
+    end
+
+
+  end
+
   describe '#validate_review_content' do
     context 'when user is North' do
-    let(:user_trait) { :north }
+      let(:user_trait) { :north }
 
-    context 'and note is a review' do
-      let(:note_type_trait) { :review }
+      context 'and note is a review' do
+        let(:note_type_trait) { :review }
 
-      it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'a valid note', :medium_content
-      it_behaves_like 'an invalid note', :long_content
+        it_behaves_like 'a valid note', :short_content
+        it_behaves_like 'an invalid note', :medium_content_north
+        it_behaves_like 'an invalid note', :long_content
+      end
+
+      context 'and note is a critique' do
+        let(:note_type_trait) { :critique }
+
+        it_behaves_like 'a valid note', :short_content
+        it_behaves_like 'a valid note', :medium_content_north
+        it_behaves_like 'a valid note', :long_content
+      end
     end
-
-    context 'and note is a critique' do
-      let(:note_type_trait) { :critique }
-
-      it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'a valid note', :medium_content
-      it_behaves_like 'a valid note', :long_content
-    end
-  end
 
   context 'when user is South' do
     let(:user_trait) { :south }
@@ -66,7 +93,7 @@ RSpec.describe Note, type: :model do
       let(:note_type_trait) { :review }
 
       it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'a valid note', :medium_content
+      it_behaves_like 'an invalid note', :medium_content_south
       it_behaves_like 'an invalid note', :long_content
     end
 
@@ -74,12 +101,11 @@ RSpec.describe Note, type: :model do
       let(:note_type_trait) { :critique }
 
       it_behaves_like 'a valid note', :short_content
-      it_behaves_like 'a valid note', :medium_content
+      it_behaves_like 'a valid note', :medium_content_south
       it_behaves_like 'a valid note', :long_content
     end
   end
     
-
   end
 
 end
