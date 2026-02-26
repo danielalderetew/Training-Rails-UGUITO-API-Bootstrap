@@ -14,7 +14,7 @@ FactoryBot.define do
 
     trait :long_content do
       content do
-        limit_min = user.utility.medium_content_limit
+        limit_min = user.utility.medium_content_limit + 1
         limit_max = user.utility.medium_content_limit + 80
         Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
       end
@@ -25,7 +25,7 @@ FactoryBot.define do
       content do
         limit_max = user.utility.medium_content_limit
         limit_min = user.utility.short_content_limit
-        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+        Faker::Lorem.words(number: rand(limit_min+1..limit_max)).join(" ")
       end
     end
 
