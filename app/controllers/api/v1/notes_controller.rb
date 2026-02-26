@@ -1,11 +1,13 @@
 module Api
   module V1
     class NotesController < ApplicationController
+      before_action :authenticate_user!
+      
       def index
-        render json: notes,
+        render json: notes_paginated,
           each_serializer: IndexNoteSerializer,
           adapter: :json,
-          meta: pagination_meta(notes) 
+          meta: pagination_meta(notes_paginated) 
       end
 
       def show
@@ -14,16 +16,20 @@ module Api
 
       private
 
+      def notes
+        current_user.notes
+      end
+
       def notes_params
         params.permit(:type, :order, :page, :page_size)
       end
 
       def note
-        Note.find(params[:id])
+        notes.find(params[:id])
       end
 
-      def notes
-        Note.where(note_type: notes_params[:type])
+      def notes_paginated
+        notes.where(note_type: notes_params[:type])
             .order(created_at: notes_params[:order] || :desc)
             .page(notes_params[:page])
             .per(notes_params[:page_size] || 10)
