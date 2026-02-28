@@ -5,123 +5,109 @@ describe Api::V1::NotesController, type: :controller do
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
 
-      context 'when filtering by critique' do
-        context 'when there are no critiques' do
-          before { get :index, params: { type: :critique } }
+      context 'when filtering by type' do
+        context 'when type is critique' do
+          context 'when has no notes' do
+            before { get :index, params: { type: :critique } }
 
-          it 'responds with empty array' do
-            expect(response_body['notes']).to be_empty
+            it_behaves_like 'successful request'
+            it_behaves_like 'returns empty notes'
           end
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
-          end
-        end
+          context 'when has notes' do
+            include_context 'when user has notes of multiple types'
+            let(:expected_notes) { user_critiques_notes }
 
-        context 'when there are critiques' do
-          let!(:user_critiques_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
-          let!(:user_reviews_notes) { create_list(:note, 5, :short_content, :review, user: user) }
+            before { get :index, params: { type: :critique } }
 
-          before { get :index, params: { type: :critique } }
-
-          it 'responds with critiques' do
-            expect(response_body['notes'].map { |n| n['id'] }).to match_array(user_critiques_notes.map(&:id))
-          end
-
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
-          end
-        end
-      end
-
-      context 'when filtering by review' do
-        context 'when there are no reviews' do
-          before { get :index, params: { type: :review } }
-
-          it 'responds with empty array' do
-            expect(response_body['notes']).to be_empty
-          end
-
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
+            it_behaves_like 'successful request'
+            it_behaves_like 'returns expected notes'
           end
         end
 
-        context 'when there are reviews' do
-          let!(:user_critiques_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
-          let!(:user_reviews_notes) { create_list(:note, 5, :short_content, :review, user: user) }
+        context 'when type is review' do
+          context 'when has no notes' do
+            before { get :index, params: { type: :review } }
 
-          before { get :index, params: { type: :review } }
-
-          it 'responds with reviews' do
-            expect(response_body['notes'].map { |n| n['id'] }).to match_array(user_reviews_notes.map(&:id))
+            it_behaves_like 'successful request'
+            it_behaves_like 'returns empty notes'
           end
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
+          context 'when has notes' do
+            include_context 'when user has notes of multiple types'
+            let(:expected_notes) { user_reviews_notes }
+
+            before { get :index, params: { type: :review } }
+
+            it_behaves_like 'successful request'
+            it_behaves_like 'returns expected notes'
           end
         end
       end
 
       context 'when filtering using order param' do
-        let!(:user_critiques_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
-        let!(:user_reviews_notes) { create_list(:note, 5, :short_content, :review, user: user) }
+        include_context 'when user has notes of multiple types'
 
         context 'when order is asc' do
-          before { get :index, params: { order: :asc } }
+          before { get :index, params: { type: :critique, order: :asc } }
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
-          end
+          let(:expected_notes) { user_critiques_notes.sort_by(&:created_at) }
 
-          it 'responds with notes in ascending order' do
-            notes = response_body['notes']
-            dates = notes.map { |n| DateTime.parse(Note.find(n['id']).created_at.to_s) }
-            expect(dates).to eq(dates.sort)
-          end
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns notes in order'
         end
 
         context 'when order is desc' do
-          before { get :index, params: { order: :desc } }
+          before { get :index, params: { type: :critique, order: :desc } }
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
-          end
+          let(:expected_notes) { user_critiques_notes.sort_by(&:created_at).reverse }
 
-          it 'responds with notes in descending order' do
-            notes = response_body['notes']
-            dates = notes.map { |n| DateTime.parse(Note.find(n['id']).created_at.to_s) }
-            expect(dates).to eq(dates.sort.reverse)
-          end
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns notes in order'
         end
       end
 
       context 'when filtering using pagination params' do
-        let!(:first_page_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
-        let!(:second_page_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
+        include_context 'with paginated critiques'
 
-        context 'when page is 1 and page_size is 5' do
-          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 5 } }
+        context 'when page_size is 2' do
+          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 2 } }
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
+          it_behaves_like 'successful request'
+
+          it 'responds with 2 notes' do
+            expect(response_body['notes'].size).to eq(2)
           end
 
-          it 'responds with critiques' do
-            expect(response_body['notes'].map { |n| n['id'] }).to match_array(first_page_notes.map(&:id))
+          it 'responds with total count in meta' do
+            expect(response_body['meta']['total_count']).to eq(10)
+          end
+
+          it 'responds with total pages in meta' do
+            expect(response_body['meta']['total_pages']).to eq(5)
+          end
+
+          it 'responds with current page in meta' do
+            expect(response_body['meta']['current_page']).to eq(1)
           end
         end
 
+        context 'when page is 1 and page_size is 5' do
+          let(:expected_notes) { first_page_notes }
+
+          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 5 } }
+
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns expected notes'
+        end
+
         context 'when page is 2 and page_size is 5' do
+          let(:expected_notes) { second_page_notes }
+
           before { get :index, params: { type: :critique, order: :asc, page: 2, page_size: 5 } }
 
-          it 'responds with 200 status' do
-            expect(response).to have_http_status(:ok)
-          end
-
-          it 'responds with notes in page 2' do
-            expect(response_body['notes'].map { |n| n['id'] }).to match_array(second_page_notes.map(&:id))
-          end
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns expected notes'
         end
       end
     end
@@ -144,23 +130,17 @@ describe Api::V1::NotesController, type: :controller do
       let(:expected) { ShowNoteSerializer.new(note, root: false).to_json }
 
       context 'when fetching a valid note' do
-        before { get :show, params: { id: note.id } }
+        let(:record) { note }
 
-        it 'responds with the note json' do
-          expect(response.body).to eq(expected)
-        end
+        before { get :show, params: { id: record.id } }
 
-        it 'responds with 200 status' do
-          expect(response).to have_http_status(:ok)
-        end
+        it_behaves_like 'basic show endpoint'
       end
 
       context 'when fetching a invalid note' do
-        before { get :show, params: { id: Faker::Number.number } }
+        before { get :show, params: { id: -1 } }
 
-        it 'responds with 404 status' do
-          expect(response).to have_http_status(:not_found)
-        end
+        it_behaves_like 'not found request'
       end
     end
 
