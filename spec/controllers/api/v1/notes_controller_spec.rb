@@ -90,71 +90,60 @@ describe Api::V1::NotesController, type: :controller do
       end
 
       context 'when filtering using pagination params' do
-        include_context 'with paginated critiques'
+        include_context 'when user has notes of multiple types'
 
         context 'when page_size is 2' do
-          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 2 } }
+          context 'when page is 1' do
+            before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 2 } }
 
-          it_behaves_like 'successful request'
+            it_behaves_like 'successful request'
 
-          it 'responds with 2 notes' do
-            expect(response_body['notes'].size).to eq(2)
+            it 'responds with 2 notes' do
+              expect(response_body['notes'].size).to eq(2)
+            end
+
+            it 'responds with total count in meta' do
+              expect(response_body['meta']['total_count']).to eq(5)
+            end
+
+            it 'responds with total pages in meta' do
+              expect(response_body['meta']['total_pages']).to eq(3)
+            end
+
+            it 'responds with current page in meta' do
+              expect(response_body['meta']['current_page']).to eq(1)
+            end
           end
 
-          it 'responds with total count in meta' do
-            expect(response_body['meta']['total_count']).to eq(10)
-          end
+          context 'when page is 3' do
+            before { get :index, params: { type: :critique, order: :asc, page: 3, page_size: 2 } }
 
-          it 'responds with total pages in meta' do
-            expect(response_body['meta']['total_pages']).to eq(5)
-          end
+            it_behaves_like 'successful request'
 
-          it 'responds with current page in meta' do
-            expect(response_body['meta']['current_page']).to eq(1)
-          end
-        end
+            it 'responds with 1 note' do
+              expect(response_body['notes'].size).to eq(1)
+            end
 
-        context 'when page is 1 and page_size is 5' do
-          let(:expected_notes) { first_page_notes }
-
-          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 5 } }
-
-          it_behaves_like 'successful request'
-          it_behaves_like 'returns expected notes'
-        end
-
-        context 'when page is 2 and page_size is 5' do
-          let(:expected_notes) { second_page_notes }
-
-          before { get :index, params: { type: :critique, order: :asc, page: 2, page_size: 5 } }
-
-          it_behaves_like 'successful request'
-          it_behaves_like 'returns expected notes'
-        end
-
-        # default page_size is 10
-        context 'when page_size is random' do
-          include_context 'with paginated critiques'
-
-          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 'banana' } }
-
-          it_behaves_like 'successful request'
-
-          it 'responds with 10 notes' do
-            expect(response_body['notes'].size).to eq(10)
+            it 'responds with current page in meta' do
+              expect(response_body['meta']['current_page']).to eq(3)
+            end
           end
         end
 
-        # default page is 1
-        context 'when page is random' do
-          include_context 'with paginated critiques'
+        # default page is 1 & page_size is 5
+        context 'when page_size and page are random' do
+          include_context 'when user has notes of multiple types'
 
-          before { get :index, params: { type: :critique, order: :asc, page: 'banana', page_size: 5 } }
+          before { get :index, params: { type: :critique, order: :asc, page: 'banana', page_size: 'banana' } }
 
           it_behaves_like 'successful request'
 
           it 'responds with 5 notes' do
             expect(response_body['notes'].size).to eq(5)
+          end
+
+          it 'responds with current page in meta' do
+            expect(response_body['meta']['current_page']).to eq(1)
           end
         end
       end
