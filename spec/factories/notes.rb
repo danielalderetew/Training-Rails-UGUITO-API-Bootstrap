@@ -16,16 +16,15 @@ FactoryBot.define do
       content do
         limit_min = user.utility.medium_content_limit + 1
         limit_max = user.utility.medium_content_limit + 80
-        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(' ')
       end
     end
-    
 
     trait :medium_content do
       content do
         limit_max = user.utility.medium_content_limit
         limit_min = user.utility.short_content_limit
-        Faker::Lorem.words(number: rand(limit_min+1..limit_max)).join(" ")
+        Faker::Lorem.words(number: rand(limit_min + 1..limit_max)).join(' ')
       end
     end
 
@@ -33,16 +32,16 @@ FactoryBot.define do
       content do
         limit_max = user.utility.short_content_limit
         limit_min = 1
-        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(" ")
+        Faker::Lorem.words(number: rand(limit_min..limit_max)).join(' ')
       end
     end
 
     trait :north do
-      association :user, factory: [:user, :north]
+      association :user, factory: %i[user north]
     end
 
     trait :south do
-      association :user, factory: [:user, :south]
+      association :user, factory: %i[user south]
     end
   end
 end

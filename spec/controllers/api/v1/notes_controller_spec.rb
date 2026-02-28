@@ -43,6 +43,16 @@ describe Api::V1::NotesController, type: :controller do
             it_behaves_like 'returns expected notes'
           end
         end
+
+        # default type is critique
+        context 'when type is random' do
+          include_context 'when user has notes of multiple types'
+
+          before { get :index, params: { type: 'banana' } }
+
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns empty notes'
+        end
       end
 
       context 'when filtering using order param' do
@@ -59,6 +69,18 @@ describe Api::V1::NotesController, type: :controller do
 
         context 'when order is desc' do
           before { get :index, params: { type: :critique, order: :desc } }
+
+          let(:expected_notes) { user_critiques_notes.sort_by(&:created_at).reverse }
+
+          it_behaves_like 'successful request'
+          it_behaves_like 'returns notes in order'
+        end
+
+        # default order is desc
+        context 'when order is random' do
+          include_context 'when user has notes of multiple types'
+
+          before { get :index, params: { type: :critique, order: 'banana' } }
 
           let(:expected_notes) { user_critiques_notes.sort_by(&:created_at).reverse }
 
@@ -108,6 +130,32 @@ describe Api::V1::NotesController, type: :controller do
 
           it_behaves_like 'successful request'
           it_behaves_like 'returns expected notes'
+        end
+
+        # default page_size is 10
+        context 'when page_size is random' do
+          include_context 'with paginated critiques'
+
+          before { get :index, params: { type: :critique, order: :asc, page: 1, page_size: 'banana' } }
+
+          it_behaves_like 'successful request'
+
+          it 'responds with 10 notes' do
+            expect(response_body['notes'].size).to eq(10)
+          end
+        end
+
+        # default page is 1
+        context 'when page is random' do
+          include_context 'with paginated critiques'
+
+          before { get :index, params: { type: :critique, order: :asc, page: 'banana', page_size: 5 } }
+
+          it_behaves_like 'successful request'
+
+          it 'responds with 5 notes' do
+            expect(response_body['notes'].size).to eq(5)
+          end
         end
       end
     end

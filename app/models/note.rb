@@ -35,8 +35,7 @@ class Note < ApplicationRecord
     max_review_words = user.utility.max_review_words
 
     unless word_count <= max_review_words
-      errors.add(:content, I18n.t("errors.review.too_long", count: max_review_words))
+      errors.add(:content, I18n.t('errors.review.too_long', count: max_review_words))
     end
   end
-  
 end

@@ -15,6 +15,5 @@ FactoryBot.define do
     trait :south do
       association :utility, factory: :south_utility
     end
-
   end
 end
