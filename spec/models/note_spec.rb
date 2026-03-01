@@ -63,7 +63,7 @@ RSpec.describe Note, type: :model do
     context 'when user is North' do
       let(:user_trait) { :north }
 
-      context 'and note is a review' do
+      context 'with note is a review' do
         let(:note_type_trait) { :review }
 
         it_behaves_like 'a valid note', :short_content
@@ -71,7 +71,7 @@ RSpec.describe Note, type: :model do
         it_behaves_like 'an invalid note', :long_content
       end
 
-      context 'and note is a critique' do
+      context 'with note is a critique' do
         let(:note_type_trait) { :critique }
 
         it_behaves_like 'a valid note', :short_content
@@ -83,7 +83,7 @@ RSpec.describe Note, type: :model do
     context 'when user is South' do
       let(:user_trait) { :south }
 
-      context 'and note is a review' do
+      context 'with note is a review' do
         let(:note_type_trait) { :review }
 
         it_behaves_like 'a valid note', :short_content
@@ -91,7 +91,7 @@ RSpec.describe Note, type: :model do
         it_behaves_like 'an invalid note', :long_content
       end
 
-      context 'and note is a critique' do
+      context 'with note is a critique' do
         let(:note_type_trait) { :critique }
 
         it_behaves_like 'a valid note', :short_content
