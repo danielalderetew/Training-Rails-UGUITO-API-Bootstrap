@@ -73,7 +73,7 @@ module Api
 
       def note_params
         params.require(:note)
-             .permit(:content, :note_type, :title)
+              .permit(:content, :note_type, :title)
       end
 
       def pagination_meta(collection)

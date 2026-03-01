@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 shared_context 'when user has notes of multiple types' do
-  let!(:user_critiques_notes) { create_list(:note, 5, :short_content, :critique, user: user) }
-  let!(:user_reviews_notes)   { create_list(:note, 5, :short_content, :review, user: user) }
+  let!(:user_critiques_notes) { create_list(:note, 5, :critique, user: user) }
+  let!(:user_reviews_notes)   { create_list(:note, 5, :review, user: user) }
 end
 
 describe Api::V1::NotesController, type: :controller do
@@ -156,7 +156,7 @@ describe Api::V1::NotesController, type: :controller do
   end
 
   describe 'GET #show' do
-    let(:note) { create(:note, :short_content, user: user) }
+    let(:note) { create(:note, user: user) }
 
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
@@ -193,23 +193,25 @@ describe Api::V1::NotesController, type: :controller do
 
       context 'when creating a valid critique' do
         let(:create_params) do
-          { note: attributes_for(:note, :critique, :long_content, user: user) }
+          { note: attributes_for(:note, :critique, word_count: 100, user: user) }
         end
 
         it_behaves_like 'returns successful created note'
       end
 
       context 'when creating a valid review' do
+        let(:word_count) { user.utility.max_review_words }
         let(:create_params) do
-          { note: attributes_for(:note, :review, :short_content, user: user) }
+          { note: attributes_for(:note, :review, word_count: word_count, user: user) }
         end
 
         it_behaves_like 'returns successful created note'
       end
 
       context 'when content is too long for a review' do
+        let(:word_count) { user.utility.max_review_words + 1 }
         let(:create_params) do
-          { note: attributes_for(:note, :review, :medium_content, user: user) }
+          { note: attributes_for(:note, :review, word_count: word_count, user: user) }
         end
 
         let(:expected_message) { I18n.t('errors.message.review_too_long', count: user.utility.max_review_words) }

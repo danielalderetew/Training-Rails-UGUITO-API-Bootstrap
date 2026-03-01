@@ -12,5 +12,3 @@ shared_examples 'failed with unprocessable entity and message' do
       .to eq(expected_message)
   end
 end
-
-
