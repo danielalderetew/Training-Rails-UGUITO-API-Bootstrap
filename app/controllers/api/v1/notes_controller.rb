@@ -20,6 +20,11 @@ module Api
                meta: pagination_meta(notes_show)
       end
 
+      def index_async
+        response = execute_async(RetrieveNotesWorker, current_user.id, index_async_params)
+        async_custom_response(response)
+      end
+
       def show
         render json: note, serializer: ShowNoteSerializer
       end
@@ -109,6 +114,10 @@ module Api
       def render_created
         message = I18n.t('notes.created')
         render json: { message: message }, status: :created
+      end
+
+      def index_async_params
+        { author: params.require(:author) }
       end
     end
   end
