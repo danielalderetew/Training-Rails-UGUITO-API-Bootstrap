@@ -42,7 +42,7 @@ ActiveAdmin.register Book do
       f.input :utility
       f.input :user,
               as: :select,
-              collection: -> { User.order(:email).pluck(:email, :id) }
+              collection: User.order(:email).pluck(:email, :id)
       f.input :genre
       f.input :author
       f.input :image
