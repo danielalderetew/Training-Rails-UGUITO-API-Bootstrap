@@ -15,6 +15,7 @@
 #  jsonb                                :jsonb
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  notes_settings                       :jsonb
 #
 class Utility < ApplicationRecord
   include EntityWithCode
@@ -27,7 +28,10 @@ class Utility < ApplicationRecord
   validates :name, uniqueness: true
   validates :name, :type, presence: true
 
-  store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
+  store_accessor :integration_urls, :external_api_authentication_url, :books_data_url,
+                 :notes_data_url
+
+  store_accessor :notes_settings, :max_review_words, :medium_content_limit, :short_content_limit
 
   def generate_entity_code
     return if code.present? && !code.to_i.zero?
@@ -71,6 +75,20 @@ class Utility < ApplicationRecord
 
   def clean_name
     self.class.name.underscore.split('_').first
+  end
+
+  def content_length(word_count)
+    short = short_content_limit.to_i
+    medium = medium_content_limit.to_i
+
+    case word_count
+    when 0..short
+      'short'
+    when (short + 1)..medium
+      'medium'
+    else
+      'long'
+    end
   end
 
   private

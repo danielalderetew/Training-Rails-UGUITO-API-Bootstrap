@@ -7,5 +7,13 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     document_number { Faker::IDNumber.valid }
     utility
+
+    trait :north do
+      association :utility, factory: :north_utility
+    end
+
+    trait :south do
+      association :utility, factory: :south_utility
+    end
   end
 end
