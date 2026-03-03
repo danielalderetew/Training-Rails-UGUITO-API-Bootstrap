@@ -31,3 +31,10 @@
 
 es:
   hello: "Hola Mundo!"
+  errors:
+    message:
+      params_is_missing: "Faltan parametros requeridos."
+      invalid_note_type: "El tipo de nota no es válido."
+      review_too_long: "La reseña debe tener como máximo %{count} palabras."
+  notes:
+    created: "Nota creada con éxito"

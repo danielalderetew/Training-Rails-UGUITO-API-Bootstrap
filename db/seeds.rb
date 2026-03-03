@@ -31,4 +31,7 @@ FactoryBot.create(:user, utility: north_utility, email: 'test_north@widergy.com'
 User.all.find_each do |user|
   random_books_amount = [1, 2, 3].sample
   FactoryBot.create_list(:book, random_books_amount, user: user, utility: user.utility)
+  random_notes_amount = [1, 2, 3].sample
+  FactoryBot.create_list(:note, random_notes_amount, word_count: 50, user: user, note_type: :critique)
+  FactoryBot.create_list(:note, random_notes_amount, word_count: 10, user: user, note_type: :review)
 end
