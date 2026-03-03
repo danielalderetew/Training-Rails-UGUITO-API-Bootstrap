@@ -25,5 +25,14 @@ panel 'Utility' do
     row :notes_data_url do
       utility.notes_data_url
     end
+    row :max_review_words do
+      utility.max_review_words
+    end
+    row :medium_content_limit do
+      utility.medium_content_limit
+    end
+    row :short_content_limit do
+      utility.short_content_limit
+    end
   end
 end

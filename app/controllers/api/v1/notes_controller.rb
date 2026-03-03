@@ -42,8 +42,9 @@ module Api
       def filtered_notes
         filters = filter_params
 
-        notes.where(note_type: filters[:type])
-             .order(created_at: filters[:order])
+        scope = notes
+        scope = scope.where(note_type: Note.note_types[filters[:type]]) if filters[:type]
+        scope.order(created_at: filters[:order])
              .page(filters[:page])
              .per(filters[:page_size])
       end

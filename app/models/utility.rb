@@ -78,10 +78,13 @@ class Utility < ApplicationRecord
   end
 
   def content_length(word_count)
+    short = short_content_limit.to_i
+    medium = medium_content_limit.to_i
+
     case word_count
-    when 0..short_content_limit
+    when 0..short
       'short'
-    when (short_content_limit + 1)..medium_content_limit
+    when (short + 1)..medium
       'medium'
     else
       'long'
