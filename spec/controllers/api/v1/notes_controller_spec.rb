@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 shared_context 'when user has notes of multiple types' do
+  let(:word_count) { user.utility.max_review_words }
   let!(:user_critiques_notes) { create_list(:note, 5, :critique, user: user) }
-  let!(:user_reviews_notes)   { create_list(:note, 5, :review, user: user) }
+  let!(:user_reviews_notes)   { create_list(:note, 5, :review, word_count: word_count, user: user) }
 end
 
 describe Api::V1::NotesController, type: :controller do

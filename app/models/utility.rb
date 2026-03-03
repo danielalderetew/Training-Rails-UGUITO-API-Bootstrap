@@ -15,6 +15,7 @@
 #  jsonb                                :jsonb
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  notes_settings                       :jsonb
 #
 class Utility < ApplicationRecord
   include EntityWithCode
@@ -30,7 +31,7 @@ class Utility < ApplicationRecord
   store_accessor :integration_urls, :external_api_authentication_url, :books_data_url,
                  :notes_data_url
 
-  class_attribute :max_review_words, :medium_content_limit, :short_content_limit
+  store_accessor :notes_settings, :max_review_words, :medium_content_limit, :short_content_limit
 
   def generate_entity_code
     return if code.present? && !code.to_i.zero?

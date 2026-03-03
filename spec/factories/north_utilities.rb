@@ -4,6 +4,7 @@ FactoryBot.define do
     name { 'North Utility' }
     external_api_key { Faker::Lorem.word }
     external_api_secret { Faker::Lorem.word }
+    notes_settings { { max_review_words: 50, medium_content_limit: 100, short_content_limit: 50 } }
     base_url do
       'https://private-bfc6a-widergytrainingnorthutilityapi.apiary-mock.com'
     end
