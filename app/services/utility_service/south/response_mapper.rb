@@ -4,9 +4,9 @@ module UtilityService
       def retrieve_books(_response_code, response_body)
         { books: map_books(response_body['Libros']) }
       end
-      
+
       def retrieve_notes(_response_code, response_body)
-        { notes: map_notes(response_body['notas']) }
+        { notes: map_notes(response_body['Notas']) }
       end
 
       private
@@ -25,33 +25,38 @@ module UtilityService
         end
       end
 
+      def parse_note_type(note)
+        note['ReseniaNota'] ? 'review' : 'note'
+      end
+
       def map_user_notes(autor)
-          {
-           email: autor['datos_de_contacto']['email'],
-           first_name: autor['datos_personales']['nombre'],
-           last_name: autor['datos_personales']['apellido']
-          }
-        end
+        full_name = autor['NombreCompletoAutor'].to_s.split(/\s+/)
+        last_name, *first_names = full_name
+
+        {
+          email: autor['EmailAutor'],
+          first_name: first_names.join(' '),
+          last_name: last_name
+        }
       end
 
       def map_book_notes(book)
-          {
-           title: book['titulo'],
-           author: book['autor'],
-           genre: book['genero'],
-          }
-        end
+        {
+          title: book['TituloLibro'],
+          author: book['NombreAutorLibro'],
+          genre: book['GeneroLibro']
+        }
       end
-      
+
       def map_notes(notes)
         notes.map do |note|
           {
-            title: note['titulo'],
-            type: note['tipo'],
-            created_at: note['fecha_creacion'],
-            content: note['contenido'],
-            user: map_user_notes(note['autor']),
-            book: map_book_notes(note['libro'])
+            title: note['TituloNota'],
+            type: parse_note_type(note),
+            created_at: note['FechaCreacionNota'],
+            content: note['Contenido'],
+            user: map_user_notes(note),
+            book: map_book_notes(note)
           }
         end
       end

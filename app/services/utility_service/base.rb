@@ -41,9 +41,9 @@ module UtilityService
       )
     end
 
-     def retrieve_notes(params)
+    def retrieve_notes(params)
       process_response(
-        get(@utility.books_data_url, query: body_for(:retrieve_notes, params)),
+        get(@utility.notes_data_url, query: body_for(:retrieve_notes, params)),
         success_response_method: :retrieve_notes,
         failed_response_method: :default_response
       )

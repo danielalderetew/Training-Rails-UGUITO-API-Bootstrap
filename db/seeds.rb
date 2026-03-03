@@ -32,7 +32,6 @@ User.all.find_each do |user|
   random_books_amount = [1, 2, 3].sample
   FactoryBot.create_list(:book, random_books_amount, user: user, utility: user.utility)
   random_notes_amount = [1, 2, 3].sample
-  random_content_trait = [:short_content, :medium_content, :long_content].sample
-  FactoryBot.create_list(:note, random_notes_amount, random_content_trait, user: user, note_type: :critique)
-  FactoryBot.create_list(:note, random_notes_amount, :short_content, user: user, note_type: :review)
+  FactoryBot.create_list(:note, random_notes_amount, word_count: 50, user: user, note_type: :critique)
+  FactoryBot.create_list(:note, random_notes_amount, word_count: 10, user: user, note_type: :review)
 end

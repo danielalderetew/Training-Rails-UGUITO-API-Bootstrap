@@ -27,7 +27,8 @@ class Utility < ApplicationRecord
   validates :name, uniqueness: true
   validates :name, :type, presence: true
 
-  store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
+  store_accessor :integration_urls, :external_api_authentication_url, :books_data_url,
+                 :notes_data_url
 
   class_attribute :max_review_words, :medium_content_limit, :short_content_limit
 
